@@ -16,5 +16,8 @@ Please refer to the hardware directory for more information.
 ### Software Configuration
 - Flash the sd card and set up the Jetson following the directions at: https://developer.nvidia.com/embedded/learn/get-started-jetson-orin-nano-devkit#intro . This project is built using Jetpack 5.1.2, available at: https://developer.nvidia.com/embedded/jetpack-sdk-512
 - Install ROS-Noetic following the instructions at: http://wiki.ros.org/noetic
-- Clone this repository
+- Set up a catkin workspace following the instructions at: http://wiki.ros.org/ROS/Tutorials/InstallingandConfiguringROSEnvironment
+- Clone this repository into ~/catkin_ws/src
+- Install the joy package using "sudo apt-get install ros-noetic-joy"
+- Install pip: sudo apt install python3-pip
 - Correct the camera color profiles using camera_overrides.isp, following the directions at https://jonathantse.medium.com/fix-pink-tint-on-jetson-nano-wide-angle-camera-a8ce5fbd797f
