@@ -1,0 +1,6 @@
+<launch>
+  
+  <node pkg="sns_flywheel" type="camera_publisher" name="camera_publisher"/>
+
+  
+</launch>

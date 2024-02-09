@@ -1,0 +1,18 @@
+<launch>
+  <!-- joy node -->
+  <node respawn="true" pkg="joy"
+        type="joy_node" name="sns_joy" >
+    <param name="dev" type="string" value="/dev/input/js0" />
+    <param name="deadzone" value="0.12" />
+  </node>
+
+ <!-- Axes -->
+  <node pkg="sns_flywheel" type="data_collection.py" name="teleop" output="screen"/>
+
+  <node pkg="sns_flywheel" type="camera_publisher.py" name="camera_publisher"/>
+
+  <node name="openrb150" pkg="rosserial_python" type="serial_node.py">
+    <param name="port" value="/dev/ttyACM0"/>
+    <param name="baud" value="9600"/>
+  </node>
+</launch>
