@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.0.2)
+set(CMAKE_CUDA_COMPILER "/usr/local/cuda/bin/nvcc")
 project(sns_flywheel)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+
+set(Torch_DIR "~/.local/lib/python3.8/site-packages/torch/share/cmake/Torch")
+
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -13,9 +17,13 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   cv_bridge
   image_transport
+  std_msgs
+  sensor_msgs
 )
 
 find_package(OpenCV REQUIRED)
+find_package(Torch REQUIRED)
+find_package(CUDA)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -123,6 +131,7 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
+  ${TORCH_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
@@ -213,6 +222,18 @@ catkin_install_python(PROGRAMS scripts/data_collection.py DESTINATION ${CATKIN_P
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+## Declare a C++ executable
 
+add_executable(camera_publisher src/camera_publisher.cpp)
+target_link_libraries(camera_publisher
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
+)
+add_executable(sns_vision src/sns_vision.cpp)
+target_link_libraries(sns_vision
+  ${catkin_LIBRARIES}
+  ${TORCH_LIBRARIES}
+)
+set_property(TARGET sns_vision PROPERTY CXX_STANDARD 17)
 add_executable(sns_teleop_joy src/sns_teleop_joy.cpp)
 target_link_libraries(sns_teleop_joy ${catkin_LIBRARIES})
