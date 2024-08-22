@@ -181,6 +181,7 @@ catkin_install_python(PROGRAMS scripts/camera_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 catkin_install_python(PROGRAMS scripts/data_collection.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+catkin_install_python(PROGRAMS scripts/gazebo_data_collection.py DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
@@ -229,11 +230,11 @@ target_link_libraries(camera_publisher
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
 )
-add_executable(sns_vision src/sns_vision.cpp)
-target_link_libraries(sns_vision
-  ${catkin_LIBRARIES}
-  ${TORCH_LIBRARIES}
-)
-set_property(TARGET sns_vision PROPERTY CXX_STANDARD 17)
+#add_executable(sns_vision src/sns_vision.cpp)
+#target_link_libraries(sns_vision
+#  ${catkin_LIBRARIES}
+#  ${TORCH_LIBRARIES}
+#)
+#set_property(TARGET sns_vision PROPERTY CXX_STANDARD 17)
 add_executable(sns_teleop_joy src/sns_teleop_joy.cpp)
 target_link_libraries(sns_teleop_joy ${catkin_LIBRARIES})

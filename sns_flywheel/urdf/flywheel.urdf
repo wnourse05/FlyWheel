@@ -1,0 +1,350 @@
+<?xml version="1.0"?>
+<robot name="flywheel">
+  <material name='grey'>
+    <color rgba="0.25 0.25 0.25 1"/>
+  </material>
+  <material name='black'>
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name='white'>
+    <color rgba="1 1 1 1"/>
+  </material>
+
+  <link name="base_link">
+  </link>
+
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  <link name="chassis">
+    <visual>
+      <geometry>
+        <box size="0.25 0.16 0.0755"/>
+      </geometry>
+      <material name="grey"/>
+      <origin rpy="0 0 0" xyz="-0.107705 0 .0235"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.25 0.16 0.0755"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="-0.107705 0 .0235"/>
+    </collision>
+    <visual>
+      <geometry>
+        <box size="0.077488 0.06 0.05"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.038744 0 0.08125"/>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.077488 0.06 0.05"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="0.038744 0 0.08125"/>
+    </collision>
+    <visual>
+      <geometry>
+        <box size="0.06734 0.01 0.05"/>
+      </geometry>
+      <origin rpy="0 0 -0.523599" xyz="0.04793 0.045067 0.0795"/>
+      <material name='grey'/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06734 0.01 0.05"/>
+      </geometry>
+      <origin rpy="0 0 -0.523599" xyz="0.04793 0.045067 0.0795"/>
+    </collision>
+    <visual>
+      <geometry>
+        <box size="0.06734 0.01 0.05"/>
+      </geometry>
+      <origin rpy="0 0 0.523599" xyz="0.04793 -0.045067 0.0795"/>
+      <material name='grey'/>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.06734 0.01 0.05"/>
+      </geometry>
+      <origin rpy="0 0 0.523599" xyz="0.04793 -0.045067 0.0795"/>
+    </collision>
+    <inertial>
+      <mass value="1.414"/>
+      <inertia ixx="0.003688" ixy="0.0" ixz="0.0" iyy="0.008036" iyz="0.0" izz=".010381"/>
+      <origin rpy="0 0 0" xyz="-0.107705 0 .0235"/>
+    </inertial>
+  </link>
+  <gazebo reference="chassis">
+    <material>Gazebo/DarkGrey</material>
+    <!-- <mu1 value="0.001"/>
+    <mu2 value="0.001"/> -->
+  </gazebo>
+
+  <joint name="camera_left_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera_left"/>
+    <!-- <origin rpy="0 1.57075 -0.523599" xyz="0.04793 0.045067 0.0795"/> -->
+    <origin rpy="0 0 1.047151" xyz="0.0502 0.049522 0.0795"/>
+  </joint>
+  <link name="camera_left">
+    <visual>
+      <geometry>
+        <sphere length="0.015" radius="0.009"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere length="0.015" radius="0.009"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.8498940e-02" />
+      <inertia ixx="5.7929667e-05" ixy="0.0" ixz="0.0"
+               iyy="5.7929667e-05" iyz="-1.4400107e-11"
+               izz="1.923075e-05" />
+    </inertial>
+  </link>
+  <gazebo reference="camera_left">
+    <material>Gazebo/Black</material>
+    <sensor name="camera_sensor_left" type="camera">
+      <pose> 0 0 0 0 0 0 </pose>
+      <visualize>true</visualize>
+      <update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>2.79253</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>1640</width>
+          <height>1232</height>
+        </image>
+        <clip>
+            <near>0.02</near>
+            <far>20.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_left_controller" filename="libgazebo_ros_camera.so">
+        <cameraName>camera_left</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_left_optical</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <joint name="camera_left_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.57075 0 -1.57075" />
+    <parent link="camera_left" />
+    <child link="camera_left_optical" />
+  </joint>
+  <link name="camera_left_optical"></link>
+
+  <joint name="camera_right_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="camera_right"/>
+    <!-- <origin rpy="-1.57075 0 -0.523599" xyz="0.04793 -0.045067 0.0795"/> -->
+    <origin rpy="0 0 -1.047151" xyz="0.0502 -0.049522 0.0795"/>
+  </joint>
+  <link name="camera_right">
+    <visual>
+      <geometry>
+        <sphere radius="0.009"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.8498940e-02" />
+      <inertia ixx="5.7929667e-05" ixy="0.0" ixz="0.0"
+               iyy="5.7929667e-05" iyz="-1.4400107e-11"
+               izz="1.923075e-05" />
+    </inertial>
+  </link>
+  <gazebo reference="camera_right">
+    <material>Gazebo/Black</material>
+    <sensor name="camera_sensor_right" type="camera">
+      <pose> 0 0 0 0 0 0 </pose>
+      <visualize>true</visualize>
+      <update_rate>30</update_rate>
+      <camera>
+        <horizontal_fov>2.79253</horizontal_fov>
+        <image>
+          <format>R8G8B8</format>
+          <width>1640</width>
+          <height>1232</height>
+        </image>
+        <clip>
+            <near>0.02</near>
+            <far>20.0</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_right_controller" filename="libgazebo_ros_camera.so">
+        <cameraName>camera_right</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_right_optical</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+  <joint name="camera_right_optical_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="-1.57075 0 -1.57075" />
+    <parent link="camera_right" />
+    <child link="camera_right_optical" />
+  </joint>
+  <link name="camera_right_optical"></link>
+
+  <link name="caster">
+    <visual>
+      <geometry>
+        <sphere radius="0.033"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="-0.264960 0 0"/>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <geometry>
+        <sphere radius="0.033"/>
+      </geometry>
+      <origin rpy="0 0 0" xyz="-0.264960 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.00001"/>
+      <inertia ixx="4.356E-9" ixy="0.0" ixz="0.0" iyy="4.356E-9" iyz="0.0" izz="4.356E-9"/>
+      <origin rpy="1.57075 0 0" xyz="0 0.008692 0"/>
+    </inertial>
+  </link>
+  <joint name="caster_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="caster"/>
+    <origin xyz="0 0 0"/>
+  </joint>
+  <gazebo reference="caster">
+    <material>Gazebo/White</material>
+    <mu1 value="0.001"/>
+    <mu2 value="0.001"/>
+  </gazebo>
+
+  <link name="wheel_left">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="1.57075 0 0" xyz="0 0.008692 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.017797" radius="0.033"/>
+      </geometry>
+      <origin rpy="1.57075 0 0" xyz="0 0.008692 0"/>
+    </collision>
+    <inertial>
+      <mass value="2.8498940e-02" />
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
+               iyy="1.1192413e-05" iyz="-1.4400107e-11"
+               izz="2.0712558e-05" />
+      <origin rpy="1.57075 0 0" xyz="0 0.008692 0"/>
+    </inertial>
+  </link>
+  <joint name="base_to_wheel_left" type="continuous">
+    <parent link="chassis"/>
+    <child link="wheel_left"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 0.08 0"/>
+  </joint>
+  <gazebo reference="wheel_left">
+    <material>Gazebo/Black</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+  </gazebo>
+  <gazebo reference="base_to_wheel_left">
+       <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <link name="wheel_right">
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.01"/>
+      </geometry>
+      <material name="black"/>
+      <origin rpy="1.57075 0 0" xyz="0 -0.008692 0"/>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder length="0.017797" radius="0.033"/>
+      </geometry>
+      <origin rpy="1.57075 0 0" xyz="0 -0.008692 0"/>
+    </collision>
+    <inertial>
+      <mass value="2.8498940e-02" />
+      <inertia ixx="1.1175580e-05" ixy="-4.2369783e-11" ixz="-5.9381719e-09"
+               iyy="1.1192413e-05" iyz="-1.4400107e-11"
+               izz="2.0712558e-05" />
+      <origin rpy="1.57075 0 0" xyz="0 -0.008692 0"/>
+    </inertial>
+  </link>
+  <joint name="base_to_wheel_right" type="continuous">
+    <parent link="chassis"/>
+    <child link="wheel_right"/>
+    <axis xyz="0 1 0"/>
+    <origin xyz="0 -0.08 0"/>
+  </joint>
+  <gazebo reference="wheel_right">
+    <material>Gazebo/Black</material>
+    <mu1>0.9</mu1>
+    <mu2>0.9</mu2>
+    <minDepth>0.001</minDepth>
+    <kp>100000000</kp>
+    <kd>1</kd>
+  </gazebo>
+  <gazebo reference="base_to_wheel_right">
+       <implicitSpringDamper>true</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo>
+        <plugin name='diff_drive' filename='libgazebo_ros_diff_drive.so'>
+    
+    
+            <!-- Wheel Information -->
+            <leftJoint>base_to_wheel_left</leftJoint>
+            <rightJoint>base_to_wheel_right</rightJoint>
+            <wheelSeparation>0.177797</wheelSeparation>
+            <wheelDiameter>0.066</wheelDiameter>
+    
+
+            <!-- Limits -->
+            <wheelTorque>200</wheelTorque>
+            <wheelAcceleration>10.0</wheelAcceleration>
+    
+
+            <!-- Output -->
+            <odometryFrame>odom</odometryFrame>
+            <robotBaseFrame>base_link</robotBaseFrame>
+
+            <publishOdom>true</publishOdom>
+            <publishOdomTF>true</publishOdomTF>
+            <publishWheelTF>true</publishWheelTF>
+    
+    
+        </plugin>
+    </gazebo>
+</robot>
