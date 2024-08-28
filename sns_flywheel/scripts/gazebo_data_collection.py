@@ -12,6 +12,7 @@ import time
 from cv_bridge import CvBridge, CvBridgeError
 import pickle
 import os
+import cv2
 
 bridge = CvBridge()
 image_left = []
@@ -35,13 +36,11 @@ def collect_images(site, vel_lin, vel_ang):
     global bridge
 
     rate = rospy.Rate(30)
-    data_img = []
+    data_img = np.zeros([30,42,112])
     for i in range(30):
         combined_image = np.hstack((image_left, image_right))
-        if len(data_img) == 0:
-            data_img = [combined_image]
-        else:
-            data_img.append(combined_image)
+        scaled_image = cv2.resize(combined_image, (112,42), interpolation=cv2.INTER_NEAREST)
+        data_img[i,:,:] = scaled_image[:,:,1]
         rate.sleep()
     filename = r'../simdata/office_' + str(site) + '_' + str(vel_lin) + '_' + str(vel_ang) + '.p'
     pickle.dump(data_img, open(filename, 'wb'))
