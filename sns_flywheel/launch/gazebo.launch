@@ -1,5 +1,4 @@
 <launch>
-  <param name="office_geom" command="$(find xacro)/xacro --inorder '$(find sns_flywheel)/urdf/office_geometry.urdf.xacro'" />
 
     <arg name="robot_x" default="0.0"/>
     <arg name="robot_y" default="0.0"/>
@@ -7,6 +6,12 @@
     <arg name="robot_yaw" default="0.0" />
 
     <arg name="rviz" default="false"/>
+
+    <arg name="world" default="office"/>
+    <param name="world" value="$(arg world)"/>
+
+    <arg name="world_name" default="$(eval '$(find sns_flywheel)/worlds/flywheel_office.sdf' if arg('world') == 'office' else '$(find sns_flywheel)/worlds/warehouse.sdf' if arg('world') == 'warehouse' else '$(find sns_flywheel)/worlds/farm.sdf')"/>
+
 
     <arg name="world_x" default="0.0"/>
     <arg name="world_y" default="0.0"/>
@@ -17,7 +22,7 @@
     <arg name="paused" default="true"/>
     <arg name="gui" default="false" />
     <arg name="headless" default="false" />
-    <arg name="world_name" default="$(find sns_flywheel)/worlds/flywheel_office.sdf" />
+    
 
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
       <arg name="debug" value="0" />
@@ -27,9 +32,6 @@
       <arg name="headless" value="$(arg headless)" />
       <arg name="world_name" value="$(arg world_name)" />
     </include>
-
-    <!-- <node name="office_world_spawner" pkg="gazebo_ros" type="spawn_model"
-      args="-urdf -model office_geometry -param office_geom -x $(arg world_x) -y $(arg world_y) -z $(arg world_z) -Y $(arg world_yaw)" /> -->
 
   <arg name="model" default="$(find sns_flywheel)/urdf/flywheel.urdf"/>
   <arg name="rvizconfig" default="$(find sns_flywheel)/rviz/flywheel.rviz" />

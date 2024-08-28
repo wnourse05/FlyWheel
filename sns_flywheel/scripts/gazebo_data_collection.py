@@ -30,7 +30,7 @@ def image_right_callback(data):
     image_right = bridge.imgmsg_to_cv2(data, desired_encoding='passthrough')
     # image_right = data
 
-def collect_images(site, vel_lin, vel_ang):
+def collect_images(site, vel_lin, vel_ang, world):
     global image_left
     global image_right
     global bridge
@@ -42,10 +42,10 @@ def collect_images(site, vel_lin, vel_ang):
         scaled_image = cv2.resize(combined_image, (112,42), interpolation=cv2.INTER_NEAREST)
         data_img[i,:,:] = scaled_image[:,:,1]
         rate.sleep()
-    filename = r'../simdata/office_' + str(site) + '_' + str(vel_lin) + '_' + str(vel_ang) + '.p'
+    filename = r'../simdata/' + world + '_' + str(site) + '_' + str(vel_lin) + '_' + str(vel_ang) + '.p'
     pickle.dump(data_img, open(filename, 'wb'))
 
-def vel_trial(vel_msg, vel_lin, vel_ang, vel_pub, site):
+def vel_trial(vel_msg, vel_lin, vel_ang, vel_pub, site, world):
     
 
     rospy.sleep(1)
@@ -54,24 +54,24 @@ def vel_trial(vel_msg, vel_lin, vel_ang, vel_pub, site):
     vel_pub.publish(vel_msg)
     rospy.sleep(0.5)
     
-    collect_images(site, vel_lin, vel_ang)
+    collect_images(site, vel_lin, vel_ang, world)
 
     vel_msg.linear.x = 0.0
     vel_msg.angular.z = 0.0
     vel_pub.publish(vel_msg)
     rospy.sleep(0.5)
 
-def angle_trial(vel_msg, speeds, vel_pub, state_reset, set_state, label, site):
+def angle_trial(vel_msg, speeds, vel_pub, state_reset, set_state, label, site, world):
     for i in range(len(speeds)):
         rospy.loginfo(label + ' - Vel ' + str(i+1) + '/' + str(2*len(speeds)))
-        vel_trial(vel_msg, speeds[i], 0.0, vel_pub, site)
+        vel_trial(vel_msg, speeds[i], 0.0, vel_pub, site, world)
         _ = set_state(state_reset)
     for i in range(len(speeds)):
         rospy.loginfo(label + ' - Vel ' + str(i+1+len(speeds)) + '/' + str(2*len(speeds)))
-        vel_trial(vel_msg, 0.0, speeds[i], vel_pub, site)
+        vel_trial(vel_msg, 0.0, speeds[i], vel_pub, site, world)
         _ = set_state(state_reset)
 
-def run_node():
+def run_node(world):
     global image_left
     global image_right
     # rospy.loginfo('Creating Velocity Publisher')
@@ -82,7 +82,12 @@ def run_node():
     # rospy.init_node('sns_controller', anonymous=True)
     model_coords = rospy.ServiceProxy('/gazebo/get_model_state', GetModelState)
     set_state = rospy.ServiceProxy('/gazebo/set_model_state', SetModelState)
-    num_sites = 199
+    x_offset = -0.5
+    y_offset = 0.5
+    if world == 'office':
+        num_sites = 27
+    elif world == 'warehouse':
+        num_sites = 39
 
     speeds = np.array([-0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1,
         0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5])
@@ -103,15 +108,15 @@ def run_node():
         # rospy.loginfo(site_label)
         site_name = 'unit_sphere_' + str(i)
         site_coords = model_coords(site_name, 'link')
-        flywheel_state.pose.position.x =  site_coords.pose.position.x-0.5
-        flywheel_state.pose.position.y = site_coords.pose.position.y+0.5
+        flywheel_state.pose.position.x =  site_coords.pose.position.x + x_offset
+        flywheel_state.pose.position.y = site_coords.pose.position.y + y_offset
 
         for j in range(len(w)):
             label = site_label + ' - ' + angs[j] + ' Degrees'
             flywheel_state.pose.orientation.w = w[j]
             flywheel_state.pose.orientation.z = z[j]
             _ = set_state(flywheel_state)
-            angle_trial(vel_msg, speeds, vel_pub, flywheel_state, set_state, label, i)
+            angle_trial(vel_msg, speeds, vel_pub, flywheel_state, set_state, label, i, world)
         rospy.loginfo(site_label + 'Finished in ' + str(time.time()-t_start) + 'sec')
         rospy.loginfo('Total Time: ' + str(time.time()-t_global) + 'sec')
 
@@ -141,6 +146,8 @@ if __name__ == '__main__':
         rospy.loginfo('Initializing Subscribers')
         rospy.Subscriber('/camera_left/image_raw', Image, image_left_callback)
         rospy.Subscriber('/camera_right/image_raw', Image, image_right_callback)
+        world = rospy.get_param('world', 'office')
+        rospy.loginfo('World: %s', world)
         rospy.loginfo(os.getcwd())
-        run_node()
+        run_node(world)
     except rospy.ROSInterruptException: pass
