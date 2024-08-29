@@ -1,5 +1,5 @@
 <launch>
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
-    <arg name="world_name" value="$(find sns_flywheel)/worlds/flywheel_office.sdf"/>
+    <arg name="world_name" value="$(find sns_flywheel)/worlds/bookstore.world"/>
   </include>
 </launch>
