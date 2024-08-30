@@ -108,7 +108,7 @@ def run_node(world):
         rospy.loginfo(type(image_left))
         site_label = 'Site ' + str(i+1) + '/' + str(num_sites)
         # rospy.loginfo(site_label)
-        site_name = 'unit_sphere_' + str(i)
+        site_name = 'fly_spawn_' + str(i)
         site_coords = model_coords(site_name, 'link')
         flywheel_state.pose.position.x =  site_coords.pose.position.x + x_offset
         flywheel_state.pose.position.y = site_coords.pose.position.y + y_offset
