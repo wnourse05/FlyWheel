@@ -10,7 +10,7 @@
     <arg name="world" default="office"/>
     <param name="world" value="$(arg world)"/>
 
-    <arg name="world_name" default="$(eval '$(find sns_flywheel)/worlds/flywheel_office.sdf' if arg('world') == 'office' else '$(find sns_flywheel)/worlds/warehouse.sdf' if arg('world') == 'warehouse' else '$(find sns_flywheel)/worlds/farm.sdf')"/>
+    <arg name="world_name" default="$(eval '$(find sns_flywheel)/worlds/flywheel_office.sdf' if arg('world') == 'office' else '$(find sns_flywheel)/worlds/warehouse.sdf' if arg('world') == 'warehouse' else '$(find sns_flywheel)/worlds/bookstore.world')"/>
 
 
     <arg name="world_x" default="0.0"/>

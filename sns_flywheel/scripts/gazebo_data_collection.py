@@ -88,6 +88,8 @@ def run_node(world):
         num_sites = 27
     elif world == 'warehouse':
         num_sites = 39
+    elif world == 'bookstore':
+        num_sites = 14
 
     speeds = np.array([-0.5, -0.45, -0.4, -0.35, -0.3, -0.25, -0.2, -0.15, -0.1,
         0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5])
